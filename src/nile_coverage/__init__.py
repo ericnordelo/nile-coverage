@@ -1,1 +1,1 @@
-"""Nile plugin addressing coverage report for Cairo Smart Contracts."""
+"""Nile plugin adding coverage reports for Cairo Smart Contracts."""

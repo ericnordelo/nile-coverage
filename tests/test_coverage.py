@@ -15,4 +15,3 @@ def test_coverage(caplog):
     CliRunner().invoke(coverage)
 
     assert "Generating coverage report" in caplog.text
-    assert "Report generated" in caplog.text
