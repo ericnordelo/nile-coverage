@@ -1,10 +1,3 @@
-"""
-    Dummy conftest.py for nile_coverage.
-
-    If you don't know what this is for, just leave it empty.
-    Read more about conftest.py under:
-    - https://docs.pytest.org/en/stable/fixture.html
-    - https://docs.pytest.org/en/stable/writing_plugins.html
-"""
+"""Dummy conftest.py for nile_coverage."""
 
 # import pytest
