@@ -1,5 +1,5 @@
 """PyTest plugin to print coverage report."""
-from cairo_coverage import cairo_coverage
+from nile_coverage.vendor import cairo_coverage
 
 
 class CoveragePlugin:

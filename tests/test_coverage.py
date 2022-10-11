@@ -5,7 +5,7 @@ import logging
 from click.testing import CliRunner
 
 from nile_coverage import __name__
-from nile_coverage.coverage import coverage
+from nile_coverage.commands import coverage
 
 
 def test_coverage(caplog):
@@ -15,3 +15,4 @@ def test_coverage(caplog):
     CliRunner().invoke(coverage)
 
     assert "Generating coverage report" in caplog.text
+    assert "Nothing to report" in caplog.text

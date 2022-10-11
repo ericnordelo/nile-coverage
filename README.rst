@@ -2,6 +2,8 @@
     :alt: Monthly Downloads
     :target: https://pepy.tech/project/nile-coverage
 
+|
+
 =============
 nile-coverage
 =============
