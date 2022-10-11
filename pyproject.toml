@@ -25,4 +25,4 @@ cairo-lang = "^0.10.0"
 
 # We need to specify that click commands are Poetry entrypoints of type `nile_plugins`. Do not modify this
 [tool.poetry.plugins."nile_plugins"]
-"coverage" = "src.nile_coverage.coverage"
+"coverage" = "src.nile_coverage.commands.coverage"
