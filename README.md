@@ -14,10 +14,32 @@ Install the plugin inside the virtual environment of your Nile project:
 (env): pip install nile-coverage
 ```
 
-Nile automatically detecs installed plugins using python [entry points](https://packaging.python.org/en/latest/specifications/entry-points/) feature. You should see the coverage command listed running nile, and you can run the report with:
+Nile automatically detecs installed plugins using python [entry points](https://packaging.python.org/en/latest/specifications/entry-points/) feature. You should see the coverage command listed running `nile`, and you can run the report with:
 
 ```sh
 (env): nile coverage
 ```
 
+For a full list of options run:
 
+```sh
+(env): nile coverage --help
+```
+
+## Troubleshooting
+
+#### Report doesn't catch execution when multiple threads are used with [pytest-xdist](https://pypi.org/project/pytest-xdist/)
+
+In order to solve this, pass the --single-thread option to the coverage command:
+
+```sh
+(env): nile coverage -s
+```
+
+#### How to run the coverage in a subset of the tests suite
+
+Mark tests in with [pytest marks](https://docs.pytest.org/en/7.1.x/how-to/mark.html#mark) and use the `--mark` argument to run a subset of tests:
+
+```sh
+(env): nile coverage -m unit
+```
