@@ -32,7 +32,7 @@ For a full list of options run:
 
 This project requires Starknet >= 0.10.1. If you are using Starknet 0.10.0, check [this guide](https://github.com/ericnordelo/cairo-coverage#how-to-make-it-work).
 
-### 2. Report doesn't catch execution when multiple threads are used with [pytest-xdist](https://pypi.org/project/pytest-xdist/)
+### 2. Report doesn't catch execution when multiple threads are used with [pytest-xdist](https://pypi.org/project/pytest-xdist/).
 
 In order to solve this, pass the `--single-thread` option to the coverage command:
 
@@ -40,7 +40,7 @@ In order to solve this, pass the `--single-thread` option to the coverage comman
 (env): nile coverage -s
 ```
 
-### 3. How to run the coverage in a subset of the tests suite
+### 3. How to run the coverage in a subset of the tests suite.
 
 Mark tests in with [pytest marks](https://docs.pytest.org/en/7.1.x/how-to/mark.html#mark) and use the `--mark` argument to run a subset of tests:
 
