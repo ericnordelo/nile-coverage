@@ -28,7 +28,7 @@ For a full list of options run:
 
 ## Troubleshooting
 
-#### Report doesn't catch execution when multiple threads are used with [pytest-xdist](https://pypi.org/project/pytest-xdist/)
+### 1. Report doesn't catch execution when multiple threads are used with [pytest-xdist](https://pypi.org/project/pytest-xdist/)
 
 In order to solve this, pass the --single-thread option to the coverage command:
 
@@ -36,7 +36,7 @@ In order to solve this, pass the --single-thread option to the coverage command:
 (env): nile coverage -s
 ```
 
-#### How to run the coverage in a subset of the tests suite
+### 2. How to run the coverage in a subset of the tests suite
 
 Mark tests in with [pytest marks](https://docs.pytest.org/en/7.1.x/how-to/mark.html#mark) and use the `--mark` argument to run a subset of tests:
 
