@@ -1,5 +1,8 @@
 # nile-coverage
 
+[![PyPI](https://img.shields.io/pypi/v/nile-coverage)](https://pypi.org/project/nile-coverage/)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/nile-coverage)
+
 > _[Nile](https://github.com/OpenZeppelin/nile) plugin adding coverage reports for Cairo Smart Contracts._
 
 ## Getting started
