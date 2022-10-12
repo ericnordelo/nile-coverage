@@ -10,8 +10,9 @@ version_scheme = "no-guess-dev"
 
 [project]
 name = "nile-coverage"
-version = "0.1.0-beta.2"
+version = "0.1.0-beta.3"
 description =  "Nile plugin adding coverage reports for Cairo Smart Contracts."
+readme = "README.md"
 dependencies = [
   "click >= 8.1.3",
   "pytest >= 7.1.3",

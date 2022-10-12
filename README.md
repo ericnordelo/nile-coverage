@@ -30,7 +30,7 @@ For a full list of options run:
 
 ### 1. Report doesn't catch execution when multiple threads are used with [pytest-xdist](https://pypi.org/project/pytest-xdist/)
 
-In order to solve this, pass the --single-thread option to the coverage command:
+In order to solve this, pass the `--single-thread` option to the coverage command:
 
 ```sh
 (env): nile coverage -s
