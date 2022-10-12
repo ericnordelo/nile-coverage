@@ -132,7 +132,7 @@ def print_sum(covered_files: List[CoverageFile]):
             sizes[idx] = int(0.75 * sizes[idx])
 
         headers = (
-            f"\n{Headers.FILE:{sizes[Headers.FILE_INDEX] + 1}}"
+            f"\n\n{Headers.FILE:{sizes[Headers.FILE_INDEX] + 1}}"
             f"{Headers.COVERED:{sizes[Headers.COVERED_INDEX] + 1}}"
             f"{Headers.MISSED:{sizes[Headers.MISSED_INDEX] + 1}}"
             f"{Headers.LINES_MISSED:{sizes[Headers.LINE_MISSED_INDEX] + 1}}\n"
@@ -165,7 +165,7 @@ def report_runs(
     )  # Sort the files by filename.
 
     if not len(files):
-        logger.info("Nothing to report")
+        logger.info("\nNothing to report")
         return "Nothing to report"
     if print_summary:
         print_sum(covered_files=files)

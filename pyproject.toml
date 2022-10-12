@@ -8,21 +8,17 @@ build-backend = "setuptools.build_meta"
 # check out https://github.com/pypa/setuptools_scm
 version_scheme = "no-guess-dev"
 
-[tool.poetry]
+[project]
 name = "nile-coverage"
-version = "0.1.0"
-description = "Nile plugin adding coverage reports for Cairo Smart Contracts."
-authors = ["Eric Nordelo <eric.nordelo39@gmail.com>"]
-readme = "README.rst"
-packages = [{include = "nile_coverage"}]
+version = "0.1.0-beta"
+description =  "Nile plugin adding coverage reports for Cairo Smart Contracts."
+dependencies = [
+  "click >= 8.1.3",
+  "pytest >= 7.1.3",
+  "asynctest >= 0.13.0",
+  "cairo-lang >= 0.10.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.9.0"
-click = "^8.1.3"
-pytest = "^7.1.3"
-asynctest = "^0.13.0"
-cairo-lang = "^0.10.0"
-
-# We need to specify that click commands are Poetry entrypoints of type `nile_plugins`. Do not modify this
-[tool.poetry.plugins."nile_plugins"]
-"coverage" = "src.nile_coverage.commands.coverage"
+# We need to specify that click commands are entrypoints of type `nile_plugins`
+[project.entry-points."nile_plugins"]
+"coverage" = "nile_coverage.commands.coverage"
