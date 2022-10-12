@@ -4,7 +4,9 @@
 
 ## Getting started
 
-> :warning: **This package requires cairo-lang >= 0.10.1. If you are using older versions, check [this](https://github.com/ericnordelo/cairo-coverage#how-to-make-it-work) section before continuing.**
+> :warning: WARNING
+>
+> **This package requires cairo-lang >= 0.10.1. If you are using older versions, check [this](https://github.com/ericnordelo/cairo-coverage#how-to-make-it-work) section before continuing.**
 
 Install the plugin inside the virtual environment of your Nile project:
 
