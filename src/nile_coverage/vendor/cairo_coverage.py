@@ -146,11 +146,9 @@ def print_sum(covered_files: List[CoverageFile]):
 
 
 def report_runs(
-    excluded_file: Optional[Set[str]] = None,
+    folder="",
     print_summary: bool = True,
 ):
-    if excluded_file is None:
-        excluded_file = set()
     report_dict = OverrideVm.covered()  # Get the infos of all the covered files.
     statements = OverrideVm.statements()  # Get the lines of codes of each files.
     files = sorted(
@@ -159,7 +157,7 @@ def report_runs(
                 statements=set(statements[file]), covered=set(coverage), name=file
             )
             for file, coverage in report_dict.items()
-            if file not in excluded_file
+            if file.startswith(folder)
         ],
         key=lambda x: x.name,
     )  # Sort the files by filename.
