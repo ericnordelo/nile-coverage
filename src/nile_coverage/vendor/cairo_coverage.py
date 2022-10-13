@@ -1,7 +1,6 @@
 from collections import defaultdict
 from dataclasses import dataclass
-from os import get_terminal_size, listdir
-from os.path import isfile, join, isdir
+import os
 
 from textwrap import wrap
 from typing import Any, DefaultDict, Dict, List, Optional, Set
@@ -117,7 +116,7 @@ class CoverageFile:
 def print_sum(covered_files: List[CoverageFile]):
     """Print the coverage summary of the project."""
     try:
-        term_size = get_terminal_size()
+        term_size = os.get_terminal_size()
         max_name = max([len(file.name) for file in covered_files]) + 2  # Longest name.
         max_missed_lines = max(
             [len(str(file.missed)) for file in covered_files]
@@ -153,7 +152,7 @@ def report_runs(
     folder="",
     print_summary: bool = True,
 ):
-    if not isdir(folder):
+    if not os.path.isdir(folder):
         logger.info(f"\n\nNothing to report (couldn't find \"{folder}\" directory)")
         return "Nothing to report"
 
@@ -189,11 +188,11 @@ def reset():
 
 
 def add_files_to_report(folder, report_dict):
-    onlyfiles = [join(folder, f) for f in listdir(folder) if isfile(join(folder, f))]
-
-    for f in onlyfiles:
-        if f not in report_dict:
-            report_dict[f] = []
+    for path, subdirs, files in os.walk(folder):
+        for name in files:
+            f = os.path.join(path, name)
+            if f not in report_dict and f.endswith('.cairo'):
+                report_dict[f] = []
 
 
 class OverrideVm(VirtualMachine):
