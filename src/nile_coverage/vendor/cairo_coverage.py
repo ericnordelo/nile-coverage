@@ -95,7 +95,7 @@ class CoverageFile:
             missed = "[...]"
         elif len(str(self.missed)) > sizes[Headers.LINE_MISSED_INDEX]:
             wrapped_missed = wrap(
-                str(self.missed), sizes[Headers.LINE_MISSED_INDEX]
+                str(self.missed), sizes[Headers.LINE_MISSED_INDEX] - 1
             )  # Wrap the missed lines list if too big.
             wrapped_missed[1:] = [
                 f"{prefix}{val}" for val in wrapped_missed[1:]
@@ -149,18 +149,18 @@ def print_sum(covered_files: List[CoverageFile]):
 
 
 def report_runs(
-    folder="",
+    contracts_folder: str = "",
     print_summary: bool = True,
 ):
-    if not os.path.isdir(folder):
-        logger.info(f"\n\nNothing to report (couldn't find \"{folder}\" directory)")
+    if not os.path.isdir(contracts_folder):
+        logger.info(f"\n\nNothing to report (couldn't find \"{contracts_folder}\" directory)")
         return "Nothing to report"
 
     report_dict = OverrideVm.covered()  # Get the infos of all the covered files.
     statements = OverrideVm.statements()  # Get the lines of codes of each files.
 
     # Add all the files to the report (reporting 0 coverage files)
-    add_files_to_report(folder, report_dict)
+    add_files_to_report(contracts_folder, report_dict)
 
     files = sorted(
         [
@@ -168,7 +168,7 @@ def report_runs(
                 statements=set(statements[file]), covered=set(coverage), name=file
             )
             for file, coverage in report_dict.items()
-            if file.startswith(folder)
+            if file.startswith(contracts_folder)
         ],
         key=lambda x: x.name,
     )  # Sort the files by filename.
@@ -181,18 +181,19 @@ def report_runs(
     return files
 
 
-def reset():
-    OverrideVm.covered().clear()
-    OverrideVm.statements().clear()
-    CoverageFile.col_sizes().clear()
-
-
-def add_files_to_report(folder, report_dict):
-    for path, subdirs, files in os.walk(folder):
+def add_files_to_report(contracts_folder: str, report_dict: DefaultDict[str, List[int]]):
+    for path, subdirs, files in os.walk(contracts_folder):
         for name in files:
             f = os.path.join(path, name)
             if f not in report_dict and f.endswith('.cairo'):
                 report_dict[f] = []
+
+
+def process_file(file: str):
+    cwd = os.getcwd()
+    if file.startswith(cwd):
+        return file.removeprefix(cwd+'/')
+    return file
 
 
 class OverrideVm(VirtualMachine):
@@ -272,7 +273,7 @@ class OverrideVm(VirtualMachine):
         instruct = self.program.debug_info.instruction_locations[
             pc
         ].inst  # First instruction in the debug info.
-        file = instruct.input_file.filename  # Current analyzed file.
+        file = process_file(instruct.input_file.filename)  # Current analyzed file relative path.
         while True:
             if "autogen" not in file:  # If file is auto generated discard it.
                 lines = list(
