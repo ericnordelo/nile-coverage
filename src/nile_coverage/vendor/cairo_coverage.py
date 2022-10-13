@@ -1,6 +1,8 @@
 from collections import defaultdict
 from dataclasses import dataclass
-from os import get_terminal_size
+from os import get_terminal_size, listdir
+from os.path import isfile, join, isdir
+
 from textwrap import wrap
 from typing import Any, DefaultDict, Dict, List, Optional, Set
 
@@ -58,10 +60,10 @@ class CoverageFile:
         self.nb_covered = len(self.covered)  # Nb of lines tested.
         self.missed = sorted(list(self.statements - self.covered))  # Lines not tested.
         self.nb_missed = len(self.missed)  # Nb of lines not tested.
-        self.pct_covered = (
+        self.pct_covered = 0 if self.nb_statements == 0 else (
             100 * self.nb_covered / self.nb_statements
         )  # % of lines tested.
-        self.pct_missed = (
+        self.pct_missed = 100 if self.nb_statements == 0 else (
             100 * self.nb_missed / self.nb_statements
         )  # % of lines not tested.
 
@@ -90,7 +92,9 @@ class CoverageFile:
         prefix = " " * (
             len(name) + len(pct_covered) + len(pct_missed) + 4
         )  # Offset of the missed lines column.
-        if len(str(self.missed)) > sizes[Headers.LINE_MISSED_INDEX]:
+        if self.pct_covered == 0:
+            missed = "[...]"
+        elif len(str(self.missed)) > sizes[Headers.LINE_MISSED_INDEX]:
             wrapped_missed = wrap(
                 str(self.missed), sizes[Headers.LINE_MISSED_INDEX]
             )  # Wrap the missed lines list if too big.
@@ -149,8 +153,16 @@ def report_runs(
     folder="",
     print_summary: bool = True,
 ):
+    if not isdir(folder):
+        logger.info(f"\n\nNothing to report (couldn't find \"{folder}\" directory)")
+        return "Nothing to report"
+
     report_dict = OverrideVm.covered()  # Get the infos of all the covered files.
     statements = OverrideVm.statements()  # Get the lines of codes of each files.
+
+    # Add all the files to the report (reporting 0 coverage files)
+    add_files_to_report(folder, report_dict)
+
     files = sorted(
         [
             CoverageFile(
@@ -163,7 +175,7 @@ def report_runs(
     )  # Sort the files by filename.
 
     if not len(files):
-        logger.info("\nNothing to report")
+        logger.info("\n\nNothing to report")
         return "Nothing to report"
     if print_summary:
         print_sum(covered_files=files)
@@ -174,6 +186,14 @@ def reset():
     OverrideVm.covered().clear()
     OverrideVm.statements().clear()
     CoverageFile.col_sizes().clear()
+
+
+def add_files_to_report(folder, report_dict):
+    onlyfiles = [join(folder, f) for f in listdir(folder) if isfile(join(folder, f))]
+
+    for f in onlyfiles:
+        if f not in report_dict:
+            report_dict[f] = []
 
 
 class OverrideVm(VirtualMachine):
