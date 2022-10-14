@@ -13,6 +13,7 @@ from starkware.cairo.lang.vm.relocatable import MaybeRelocatable
 from starkware.cairo.lang.vm.vm_core import RunContext, VirtualMachine
 
 from nile_coverage import logger
+from nile_coverage.vendor.reporters import XmlReporter
 
 
 class Headers:
@@ -140,10 +141,22 @@ def print_sum(covered_files: List[CoverageFile]):
             f"{Headers.MISSED:{sizes[Headers.MISSED_INDEX] + 1}}"
             f"{Headers.LINES_MISSED:{sizes[Headers.LINE_MISSED_INDEX] + 1}}\n"
         )  # Prepare the coverage table headers.
+
+        total_covered = 0
         underline = "-" * term_size.columns  # To separate the header from the values.
         logger.info(headers + underline)
         for file in covered_files:  # Prints the report of each file.
             logger.info(file)
+            total_covered += file.pct_covered
+
+        total_str = "TOTAL"
+        total_covered /= len(covered_files)
+        footer = (
+            f"\n{total_str:{sizes[Headers.FILE_INDEX] + 1}}"
+            f"{total_covered:{8}}\n"
+        )  # Prepare the coverage table footer.
+
+        logger.info(underline + footer)
     except OSError:
         pass
 
@@ -179,6 +192,19 @@ def report_runs(
     if print_summary:
         print_sum(covered_files=files)
     return files
+
+def report_runs_xml(
+    contracts_folder: str = ""
+):
+    if not os.path.isdir(contracts_folder):
+        logger.info(f"\n\nNothing to report (couldn't find \"{contracts_folder}\" directory)")
+        return "Nothing to report"
+
+    report_dict = OverrideVm.covered()  # Get the infos of all the covered files.
+    statements = OverrideVm.statements()  # Get the lines of codes of each files.
+
+    reporter = XmlReporter(contracts_folder, statements, report_dict)
+    reporter.report(outfile="coverage.xml")
 
 
 def add_files_to_report(contracts_folder: str, report_dict: DefaultDict[str, List[int]]):

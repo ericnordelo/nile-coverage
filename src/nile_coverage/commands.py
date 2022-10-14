@@ -4,7 +4,7 @@ import click
 import pytest
 
 from nile_coverage import logger
-from nile_coverage.pytest_plugins.coverage import CoveragePlugin
+from nile_coverage.plugins import CoveragePlugin
 
 
 @click.command()
@@ -13,12 +13,15 @@ from nile_coverage.pytest_plugins.coverage import CoveragePlugin
     "--single-thread", "-s", is_flag=True, help="Run the test suite in a single thread."
 )
 @click.option(
-    "--contracts_folder",
+    "--contracts-folder",
     "-c",
     default="contracts",
     help="Specify contracts folder (default to 'contracts').",
 )
-def coverage(mark, single_thread, contracts_folder):
+@click.option(
+    "--xml", is_flag=True, help="Create a coverage.xml report with Cobertura format."
+)
+def coverage(mark, single_thread, contracts_folder, xml):
     """Generate coverage report for Cairo Smart Contracts."""
     logger.info("\nGenerating coverage report")
 
@@ -30,4 +33,4 @@ def coverage(mark, single_thread, contracts_folder):
     if single_thread:
         args += ["-n", "0"]
 
-    pytest.main(args, plugins=[CoveragePlugin(contracts_folder)])
+    pytest.main(args, plugins=[CoveragePlugin(contracts_folder, xml)])
