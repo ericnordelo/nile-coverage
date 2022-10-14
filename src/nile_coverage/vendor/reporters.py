@@ -152,7 +152,10 @@ class XmlReporter:
 
             # Q: can we get info about the number of times a statement is
             # executed?  If so, that should be recorded here.
-            xline.setAttribute("hits", "1")
+            if line in cf.covered:
+                xline.setAttribute("hits", "1")
+            else:
+                xline.setAttribute("hits", "0")
             xlines.appendChild(xline)
 
         class_branches = 0.0
