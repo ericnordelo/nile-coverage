@@ -29,9 +29,27 @@ For a full list of options run:
 (env): nile coverage --help
 ```
 
+## Recipes
+
+### 1. Run coverage in a subset of the tests suite.
+
+Mark tests in with [pytest marks](https://docs.pytest.org/en/7.1.x/how-to/mark.html#mark) and use the `--mark` argument to run a subset of tests:
+
+```sh
+(env): nile coverage -m unit
+```
+
+### 2. Integrate with [codecov.io](https://about.codecov.io/).
+
+Generate a cobertura format coverage xml file named "coverage.xml" using the `--xml` flag:
+
+```sh
+(env): nile coverage --xml
+```
+
 ## Troubleshooting
 
-### 1. Getting Nothing to report after tests have been run successfully.
+### 1. Getting zero coverage after tests have been run successfully.
 
 This project requires Starknet >= 0.10.1. If you are using Starknet 0.10.0, check [this guide](https://github.com/ericnordelo/cairo-coverage#how-to-make-it-work).
 
@@ -41,12 +59,4 @@ In order to solve this, pass the `--single-thread` option to the coverage comman
 
 ```sh
 (env): nile coverage -s
-```
-
-### 3. How to run the coverage in a subset of the tests suite.
-
-Mark tests in with [pytest marks](https://docs.pytest.org/en/7.1.x/how-to/mark.html#mark) and use the `--mark` argument to run a subset of tests:
-
-```sh
-(env): nile coverage -m unit
 ```
