@@ -1,8 +1,8 @@
-"""PyTest plugin to print coverage report."""
+"""Integration plugins."""
 from nile_coverage.vendor import cairo_coverage
 
 
-class CoveragePlugin:
+class PytestCairoCoveragePlugin:
     def __init__(self, contracts_folder, xml=False):
         self.contracts_folder = contracts_folder
         self.xml = xml
@@ -12,8 +12,4 @@ class CoveragePlugin:
         Called after whole test run finished, right before
         returning the exit status to the system.
         """
-        if self.xml:
-            cairo_coverage.report_runs_xml(self.contracts_folder)
-        else:
-            cairo_coverage.report_runs(self.contracts_folder)
-
+        cairo_coverage.run_report(self.contracts_folder, self.xml)

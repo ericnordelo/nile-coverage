@@ -4,7 +4,7 @@ import click
 import pytest
 
 from nile_coverage import logger
-from nile_coverage.plugins import CoveragePlugin
+from nile_coverage.plugins import PytestCairoCoveragePlugin
 
 
 @click.command()
@@ -33,4 +33,4 @@ def coverage(mark, single_thread, contracts_folder, xml):
     if single_thread:
         args += ["-n", "0"]
 
-    pytest.main(args, plugins=[CoveragePlugin(contracts_folder, xml)])
+    pytest.main(args, plugins=[PytestCairoCoveragePlugin(contracts_folder, xml)])

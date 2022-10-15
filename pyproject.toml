@@ -10,7 +10,7 @@ version_scheme = "no-guess-dev"
 
 [project]
 name = "nile-coverage"
-version = "0.1.0-beta.13"
+version = "0.1.0-beta.14"
 description =  "Nile plugin adding coverage reports for Cairo Smart Contracts."
 readme = "README.md"
 dependencies = [
@@ -19,6 +19,7 @@ dependencies = [
   "asynctest >= 0.13.0",
   "cairo-lang >= 0.10.0",
   "importlib-metadata >= 4.0"
+  "pycobertura >= 3.0.0"
 ]
 
 # We need to specify that click commands are entrypoints of type `nile_plugins`
