@@ -15,6 +15,8 @@ from nile_coverage.vendor.utils import process_file
 
 
 def run_report(contracts_folder: str = "", xml: bool = False):
+    logger.info("\nGenerating coverage report. This can take a minute...")
+
     if not os.path.isdir(contracts_folder):
         logger.info(
             f'\n\nNothing to report (couldn\'t find "{contracts_folder}" directory)'

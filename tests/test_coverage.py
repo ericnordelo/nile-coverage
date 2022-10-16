@@ -14,5 +14,5 @@ def test_coverage(caplog):
 
     CliRunner().invoke(coverage)
 
-    assert "Generating coverage report" in caplog.text
+    assert "Generating coverage report. This can take a minute..." in caplog.text
     assert "Nothing to report" in caplog.text
