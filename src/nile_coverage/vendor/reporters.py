@@ -8,8 +8,14 @@ import xml.dom.minidom
 
 from pycobertura import Cobertura
 from pycobertura.reporters import TextReporter as CoberturaTextReporter
+
 from nile_coverage import __url__, __version__, logger
-from nile_coverage.vendor.utils import CoverageFile, Headers, add_files_to_report, get_file_lines_count
+from nile_coverage.vendor.utils import (
+    CoverageFile,
+    add_files_to_report,
+    get_file_lines_count,
+    get_file_statements,
+)
 
 
 class XmlReporter:
@@ -20,6 +26,7 @@ class XmlReporter:
         self.statements = statements
         self.report_dict = report_dict
         self.contracts_folder = contracts_folder
+        self.cairo_path = [contracts_folder]
 
         # add empty coverage files to report
         add_files_to_report(contracts_folder, self.report_dict)
@@ -131,12 +138,11 @@ class XmlReporter:
 
         rel_name = cf.name
 
-        # TODO: Improve this estimation by getting real touchable lines
-        # from untouched files
         if cf.nb_statements == 0:
-            lines_count = get_file_lines_count(rel_name)
-            cf.statements = list(range(1, lines_count + 1))
-            cf.nb_statements = get_file_lines_count(rel_name)
+            statements = get_file_statements([rel_name], self.cairo_path)
+            if rel_name in statements:
+                cf.statements = list(statements[rel_name])
+                cf.nb_statements = len(cf.statements)
 
         dirname = os.path.dirname(rel_name) or "."
         dirname = "/".join(dirname.split("/")[:6])
@@ -195,8 +201,6 @@ class TextReporter(XmlReporter):
         tr = CoberturaTextReporter(cobertura)
 
         logger.info(f"\n\n{tr.generate()}")
-
-
 
 
 def serialize_xml(dom):

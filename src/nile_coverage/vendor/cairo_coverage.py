@@ -11,6 +11,7 @@ from starkware.cairo.lang.vm.vm_core import RunContext, VirtualMachine
 
 from nile_coverage import logger
 from nile_coverage.vendor.reporters import TextReporter, XmlReporter
+from nile_coverage.vendor.utils import process_file
 
 
 def run_report(contracts_folder: str = "", xml: bool = False):
@@ -28,13 +29,6 @@ def run_report(contracts_folder: str = "", xml: bool = False):
     else:
         reporter = TextReporter(contracts_folder, statements, report_dict)
         reporter.report()
-
-
-def process_file(file: str):
-    cwd = os.getcwd()
-    if file.startswith(cwd):
-        return file.removeprefix(cwd + "/")
-    return file
 
 
 class OverrideVm(VirtualMachine):
@@ -132,14 +126,14 @@ class OverrideVm(VirtualMachine):
                 instruct.parent_location is not None
             ):  # Continue until we have last parent location.
                 instruct = instruct.parent_location[0]
-                file = instruct.input_file.filename
+                file = process_file(instruct.input_file.filename)
             else:
                 return
 
     def cover_file(
         self,
     ):
-        """Adds the coverage report in the report dict and all the lines of code."""
+        """Add the coverage report in the report dict and all the lines of code."""
         if self.program.debug_info is not None:
             report_dict = self.__class__.covered()
             statements = self.__class__.statements()

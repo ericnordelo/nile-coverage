@@ -5,53 +5,21 @@ from dataclasses import dataclass
 from textwrap import wrap
 from typing import Dict, List, Set
 
+from starkware.starknet.compiler.compile import compile_starknet_files
+
 
 @dataclass
 class CoverageFile:
     name: str  # Filename.
     covered: Set[int]  # Tested lines.
     statements: Set[int]  # Lines with code.
-    precision: int = 1  # Decimals for %.
-
-    @staticmethod
-    def col_sizes(sizes=[]):
-        """To share the column sizes between all the instances."""
-        return sizes
 
     def __post_init__(self):
         """Finish initialization."""
-        self.nb_statements = len(
-            self.statements
-        )  # Nb of lines with code in the cairo file.
-        self.nb_covered = len(self.covered)  # Nb of lines tested.
-        self.missed = sorted(list(self.statements - self.covered))  # Lines not tested.
-        self.nb_missed = len(self.missed)  # Nb of lines not tested.
-        self.pct_covered = (
-            0
-            if self.nb_statements == 0
-            else (100 * self.nb_covered / self.nb_statements)
-        )  # % of lines tested.
-        self.pct_missed = (
-            100
-            if self.nb_statements == 0
-            else (100 * self.nb_missed / self.nb_statements)
-        )  # % of lines not tested.
-
-
-class Headers:
-    """Headers for the report table."""
-
-    FILE: str = "File "
-    FILE_INDEX: int = 0
-
-    COVERED: str = "Covered(%) "
-    COVERED_INDEX: int = 1
-
-    MISSED: str = "Missed(%) "
-    MISSED_INDEX: int = 2
-
-    LINES_MISSED: str = "Lines missed"
-    LINE_MISSED_INDEX: int = 3
+        # Number of lines with code in the cairo file.
+        self.nb_statements = len(self.statements)
+        # Number of lines tested.
+        self.nb_covered = len(self.covered)
 
 
 def add_files_to_report(contracts_folder: str, report_dict):
@@ -66,3 +34,49 @@ def add_files_to_report(contracts_folder: str, report_dict):
 def get_file_lines_count(file):
     """Count the lines of a file."""
     return sum(1 for line in open(file))
+
+
+def process_file(file: str):
+    """Get relative path."""
+    cwd = os.getcwd()
+    if file.startswith(cwd):
+        return file.removeprefix(cwd + "/")
+    return file
+
+
+def get_file_statements(files, cairo_path=None):
+    """Get the statements from the filename."""
+    if cairo_path is None:
+        cairo_path = []
+
+    statements = dict()
+    cc = compile_starknet_files(files, cairo_path=cairo_path, debug_info=True)
+
+    for pc in set(cc.program.debug_info.instruction_locations.keys()):
+        instruct = cc.program.debug_info.instruction_locations[
+            pc
+        ].inst
+        file = process_file(
+            instruct.input_file.filename
+        )
+        while True:
+            # If file is auto generated discard it.
+            if "autogen" not in file:
+                lines = list(
+                    range(
+                        instruct.start_line,
+                        instruct.end_line + 1,
+                    )
+                )
+                if not file in statements:
+                    statements[file] = set()
+                statements[file].update(lines)
+            if (
+                instruct.parent_location is not None
+            ):  # Continue until we have last parent location.
+                instruct = instruct.parent_location[0]
+                file = process_file(instruct.input_file.filename)
+            else:
+                break
+
+    return statements
