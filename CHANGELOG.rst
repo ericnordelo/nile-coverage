@@ -2,7 +2,7 @@
 Changelog
 =========
 
-Version 0.1.0
+Version 0.1.0-beta
 ===========
 
-- Integrate cairo-coverage package and support coverage reports.
+- Provide coverage reports from pytest test suite.
