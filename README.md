@@ -43,9 +43,9 @@ Generate a cobertura format coverage xml file named "coverage.xml" using the `--
 (env): nile coverage --xml
 ```
 
-### 3. Change the default folder containing smart contracts.
+### 3. Change the default folder containing Smart Contracts.
 
-If your smart contracts are in a different folder than "contracts" (Nile default), use the
+If your Smart Contracts are in a different folder than "contracts" (Nile default), use the
 `--contracts-folder` flag to set the correct one:
 
 ```sh
