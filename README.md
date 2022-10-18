@@ -7,10 +7,6 @@
 
 ## Getting started
 
-> :warning: WARNING
->
-> **This package requires cairo-lang >= 0.10.1. If you are using older versions, check [this](https://github.com/ericnordelo/cairo-coverage#how-to-make-it-work) section before continuing.**
-
 Install the plugin inside the virtual environment of your Nile project:
 
 ```sh
@@ -49,9 +45,13 @@ Generate a cobertura format coverage xml file named "coverage.xml" using the `--
 
 ## Troubleshooting
 
-### 1. Getting zero coverage after tests have been run successfully.
+### 1. Report doesn't catch execution when multiple threads are used with [pytest-xdist](https://pypi.org/project/pytest-xdist/).
 
-This project requires Starknet >= 0.10.1. If you are using Starknet 0.10.0, check [this guide](https://github.com/ericnordelo/cairo-coverage#how-to-make-it-work).
+To solve this, pass the `--single-thread` option to the coverage command:
+
+```sh
+(env): nile coverage -s
+```
 
 ### 2. Report doesn't catch execution when multiple threads are used with [pytest-xdist](https://pypi.org/project/pytest-xdist/).
 
