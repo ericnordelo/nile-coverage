@@ -43,17 +43,18 @@ Generate a cobertura format coverage xml file named "coverage.xml" using the `--
 (env): nile coverage --xml
 ```
 
+### 3. Change the default folder containing smart contracts.
+
+If your smart contracts are in a different folder than "contracts" (Nile default), use the
+`--contracts-folder` flag to set the correct one:
+
+```sh
+(env): nile coverage -c src
+```
+
 ## Troubleshooting
 
 ### 1. Report doesn't catch execution when multiple threads are used with [pytest-xdist](https://pypi.org/project/pytest-xdist/).
-
-To solve this, pass the `--single-thread` option to the coverage command:
-
-```sh
-(env): nile coverage -s
-```
-
-### 2. Report doesn't catch execution when multiple threads are used with [pytest-xdist](https://pypi.org/project/pytest-xdist/).
 
 To solve this, pass the `--single-thread` option to the coverage command:
 
