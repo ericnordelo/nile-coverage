@@ -61,3 +61,7 @@ To solve this, pass the `--single-thread` option to the coverage command:
 ```sh
 (env): nile coverage -s
 ```
+
+## Acknowledgements
+
+This package uses the [starknet-edu/cairo-coverage](https://github.com/starknet-edu/cairo-coverage) Virtual Machine override to get covered lines for the final report. Special thanks to @LucasLvy from StarkWare!
