@@ -40,7 +40,7 @@ def process_file(file: str):
     """Get relative path."""
     cwd = os.getcwd()
     if file.startswith(cwd):
-        return file.removeprefix(cwd + "/")
+        return file[len(cwd)+1:]
     return file
 
 

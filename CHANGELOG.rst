@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 0.2.1
+===========
+
+- Add support for python 3.8
+
 Version 0.2.0
 ===========
 
