@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 0.2.2
+===========
+
+- Return the same exit code as pytest from coverage command
+
 Version 0.2.1
 ===========
 
