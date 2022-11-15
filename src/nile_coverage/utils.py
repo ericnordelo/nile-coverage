@@ -1,25 +1,18 @@
 """Utils for vendor packages."""
 
+import json
 import os
-from dataclasses import dataclass
-from textwrap import wrap
-from typing import Dict, List, Set
 
 from starkware.starknet.compiler.compile import compile_starknet_files
 
 
-@dataclass
-class CoverageFile:
-    name: str  # Filename.
-    covered: Set[int]  # Tested lines.
-    statements: Set[int]  # Lines with code.
+class JsonEncoder(json.JSONEncoder):
+    """Encoder converting sets to lists."""
 
-    def __post_init__(self):
-        """Finish initialization."""
-        # Number of lines with code in the cairo file.
-        self.nb_statements = len(self.statements)
-        # Number of lines tested.
-        self.nb_covered = len(self.covered)
+    def default(self, obj):
+        if isinstance(obj, set):
+            return list(obj)
+        return json.JSONEncoder.default(self, obj)
 
 
 def add_files_to_report(contracts_folder: str, report_dict):
@@ -31,16 +24,11 @@ def add_files_to_report(contracts_folder: str, report_dict):
                 report_dict[f] = []
 
 
-def get_file_lines_count(file):
-    """Count the lines of a file."""
-    return sum(1 for line in open(file))
-
-
 def process_file(file: str):
     """Get relative path."""
     cwd = os.getcwd()
     if file.startswith(cwd):
-        return file[len(cwd)+1:]
+        return file[len(cwd) + 1 :]
     return file
 
 
@@ -53,12 +41,8 @@ def get_file_statements(files, cairo_path=None):
     cc = compile_starknet_files(files, cairo_path=cairo_path, debug_info=True)
 
     for pc in set(cc.program.debug_info.instruction_locations.keys()):
-        instruct = cc.program.debug_info.instruction_locations[
-            pc
-        ].inst
-        file = process_file(
-            instruct.input_file.filename
-        )
+        instruct = cc.program.debug_info.instruction_locations[pc].inst
+        file = process_file(instruct.input_file.filename)
         while True:
             # If file is auto generated discard it.
             if "autogen" not in file:
