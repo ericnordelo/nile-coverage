@@ -5,6 +5,11 @@ Changelog
 Version 0.2.4
 ===========
 
+- Deprecate --single-thread option
+
+Version 0.2.4
+===========
+
 - Use asynchronous version of Click
 
 Version 0.2.3
