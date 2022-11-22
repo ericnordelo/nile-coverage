@@ -1,21 +1,19 @@
 """Coverage reporters."""
 
+import json
 import os
 import os.path
 import sys
 import time
 import xml.dom.minidom
+from collections import defaultdict
 
 from pycobertura import Cobertura
 from pycobertura.reporters import TextReporter as CoberturaTextReporter
 
 from nile_coverage import __url__, __version__, logger
-from nile_coverage.vendor.utils import (
-    CoverageFile,
-    add_files_to_report,
-    get_file_lines_count,
-    get_file_statements,
-)
+from nile_coverage.common import COVERAGE_DIRECTORY, CoverageFile
+from nile_coverage.utils import add_files_to_report, get_file_statements
 
 
 class XmlReporter:
@@ -214,3 +212,37 @@ def rate(hit, num):
         return "1"
     else:
         return "%.4g" % (float(hit) / num)
+
+
+def run_report(contracts_folder: str = "", xml: bool = False):
+    logger.info("\nGenerating coverage report. This can take a minute...")
+
+    if not os.path.isdir(contracts_folder):
+        logger.info(
+            f'\n\nNothing to report (couldn\'t find "{contracts_folder}" directory)'
+        )
+
+    # Aggregate nile.coverage files
+    statements = defaultdict(set)
+    report_dict = defaultdict(set)
+
+    files = [
+        os.path.join(COVERAGE_DIRECTORY, f)
+        for f in os.listdir(COVERAGE_DIRECTORY)
+        if os.path.isfile(os.path.join(COVERAGE_DIRECTORY, f))
+    ]
+
+    for f in files:
+        with open(f, "r") as fp:
+            data = json.load(fp)
+            for contract in data["lines"]:
+                statements[contract].update(data["lines"][contract])
+            for contract in data["covered_lines"]:
+                report_dict[contract].update(data["covered_lines"][contract])
+
+    if xml:
+        reporter = XmlReporter(contracts_folder, statements, report_dict)
+        reporter.report(outfile="coverage.xml")
+    else:
+        reporter = TextReporter(contracts_folder, statements, report_dict)
+        reporter.report()

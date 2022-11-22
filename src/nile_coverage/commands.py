@@ -1,8 +1,9 @@
 """Coverage command definition."""
 
+import sys
+
 import click
 import pytest
-import sys
 
 from nile_coverage import logger
 from nile_coverage.plugins import PytestCairoCoveragePlugin
@@ -32,4 +33,6 @@ def coverage(mark, single_thread, contracts_folder, xml):
     if single_thread:
         args += ["-n", "0"]
 
-    sys.exit(pytest.main(args, plugins=[PytestCairoCoveragePlugin(contracts_folder, xml)]))
+    sys.exit(
+        pytest.main(args, plugins=[PytestCairoCoveragePlugin(contracts_folder, xml)])
+    )

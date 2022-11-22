@@ -4,14 +4,21 @@ from typing import Any, DefaultDict, Dict, List, Optional, Set
 
 from starkware.cairo.lang.compiler.instruction import Instruction
 from starkware.cairo.lang.compiler.program import ProgramBase
-from starkware.cairo.lang.vm import cairo_runner
 from starkware.cairo.lang.vm.builtin_runner import BuiltinRunner
 from starkware.cairo.lang.vm.relocatable import MaybeRelocatable
 from starkware.cairo.lang.vm.vm_core import RunContext, VirtualMachine
 
 from nile_coverage import logger
+from nile_coverage.common import CairoTraceReport
+from nile_coverage.utils import process_file
 from nile_coverage.vendor.reporters import TextReporter, XmlReporter
-from nile_coverage.vendor.utils import process_file
+
+
+def get_coverage_results():
+    report_dict = OverrideVm.covered()
+    statements = OverrideVm.statements()
+
+    return CairoTraceReport(statements, report_dict)
 
 
 def run_report(contracts_folder: str = "", xml: bool = False):
@@ -51,6 +58,7 @@ class OverrideVm(VirtualMachine):
             builtin_runners=builtin_runners,
             program_base=program_base,
         )
+
         self.old_end_run = (
             super().end_run
         )  # Save the old end run function to wrap it afterwards.
@@ -85,25 +93,28 @@ class OverrideVm(VirtualMachine):
 
     @staticmethod
     def covered(
-        val: DefaultDict[str, List[int]] = defaultdict(list)
-    ) -> DefaultDict[str, list]:
+        val: DefaultDict[str, Set[int]] = defaultdict(set)
+    ) -> DefaultDict[str, set]:
         """To share the covered files between all the instances."""
         return val
 
     @staticmethod
     def statements(
-        val: DefaultDict[str, List[int]] = defaultdict(list)
-    ) -> DefaultDict[str, list]:
+        val: DefaultDict[str, Set[int]] = defaultdict(set)
+    ) -> DefaultDict[str, set]:
         """To share the lines of codes in files between all the instances."""
         return val
 
     def pc_to_line(
         self,
         pc,
-        statements: DefaultDict[str, list],
-        report_dict: DefaultDict[str, List[int]],
+        statements: DefaultDict[str, set],
+        report_dict: DefaultDict[str, Set[int]],
     ) -> None:
-        """Converts the touched pcs to the line numbers of the original file and saves them."""
+        """
+        Converts the touched pcs to the line numbers
+        of the original file and saves them.
+        """
         should_update_report = (
             pc in self.touched_pcs
         )  # If the pc is not touched by the test don't report it.
@@ -122,8 +133,8 @@ class OverrideVm(VirtualMachine):
                     )
                 )  # Get the lines touched.
                 if should_update_report:
-                    report_dict[file].extend(lines)
-                statements[file].extend(lines)
+                    report_dict[file].update(lines)
+                statements[file].update(lines)
             if (
                 instruct.parent_location is not None
             ):  # Continue until we have last parent location.
@@ -141,6 +152,3 @@ class OverrideVm(VirtualMachine):
             statements = self.__class__.statements()
             for pc in set(self.program.debug_info.instruction_locations.keys()):
                 self.pc_to_line(pc=pc, report_dict=report_dict, statements=statements)
-
-
-cairo_runner.VirtualMachine = OverrideVm
