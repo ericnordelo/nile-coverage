@@ -2,7 +2,7 @@
 
 import sys
 
-import click
+import assyncclick as click
 import pytest
 
 from nile_coverage import logger
