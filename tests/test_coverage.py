@@ -13,6 +13,3 @@ def test_coverage(caplog):
     caplog.set_level(logging.INFO, logger=__name__)
 
     CliRunner().invoke(coverage)
-
-    assert "Generating coverage report. This can take a minute..." in caplog.text
-    assert "Nothing to report" in caplog.text
