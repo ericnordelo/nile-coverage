@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 0.2.5.1
+===========
+
+- Fix bug in integration with xdist
+
 Version 0.2.5
 ===========
 
