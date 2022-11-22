@@ -25,7 +25,7 @@ from nile_coverage.plugins import PytestCairoCoveragePlugin
 )
 def coverage(mark, single_thread, contracts_folder, xml):
     """Generate coverage report for Cairo Smart Contracts."""
-    args = ["-p", "no:warnings"]
+    args = ["-p", "no:warnings", "-n", "auto"]
 
     if mark is not None:
         args += ["-m", mark]
