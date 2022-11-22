@@ -12,7 +12,7 @@ from nile_coverage.plugins import PytestCairoCoveragePlugin
 @click.command()
 @click.option("--mark", "-m", help="Pytest mark wrapper.")
 @click.option(
-    "--single-thread", "-s", is_flag=True, help="Run the test suite in a single thread."
+    "--single-thread", "-s", is_flag=True, help="DEPRECATED OPTION."
 )
 @click.option(
     "--contracts-folder",
@@ -29,9 +29,6 @@ def coverage(mark, single_thread, contracts_folder, xml):
 
     if mark is not None:
         args += ["-m", mark]
-
-    if single_thread:
-        args += ["-n", "0"]
 
     sys.exit(
         pytest.main(args, plugins=[PytestCairoCoveragePlugin(contracts_folder, xml)])

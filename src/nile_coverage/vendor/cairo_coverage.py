@@ -11,7 +11,6 @@ from starkware.cairo.lang.vm.vm_core import RunContext, VirtualMachine
 from nile_coverage import logger
 from nile_coverage.common import CairoTraceReport
 from nile_coverage.utils import process_file
-from nile_coverage.vendor.reporters import TextReporter, XmlReporter
 
 
 def get_coverage_results():
@@ -19,25 +18,6 @@ def get_coverage_results():
     statements = OverrideVm.statements()
 
     return CairoTraceReport(statements, report_dict)
-
-
-def run_report(contracts_folder: str = "", xml: bool = False):
-    logger.info("\nGenerating coverage report. This can take a minute...")
-
-    if not os.path.isdir(contracts_folder):
-        logger.info(
-            f'\n\nNothing to report (couldn\'t find "{contracts_folder}" directory)'
-        )
-
-    report_dict = OverrideVm.covered()
-    statements = OverrideVm.statements()
-
-    if xml:
-        reporter = XmlReporter(contracts_folder, statements, report_dict)
-        reporter.report(outfile="coverage.xml")
-    else:
-        reporter = TextReporter(contracts_folder, statements, report_dict)
-        reporter.report()
 
 
 class OverrideVm(VirtualMachine):
