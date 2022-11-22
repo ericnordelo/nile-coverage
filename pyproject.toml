@@ -25,4 +25,5 @@ dependencies = [
 
 # We need to specify that click commands are entrypoints of type `nile_plugins`
 [project.entry-points."nile_plugins"]
-"coverage" = "nile_coverage.commands.coverage"
+cli =
+    "coverage" = "nile_coverage.commands.coverage"
